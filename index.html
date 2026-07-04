@@ -299,7 +299,8 @@
             if (tocchiNumerici.length < 2) {
                 tocchiNumerici.push(valoreSelezionato);
 
-                if (tocchiNumerici.length === 2) {
+                               if (tocchiNumerici.length === 2) {
+                    // Prende la prima cifra (indice 0) e la seconda cifra (indice 1)
                     infoSpettatore.numero = "" + tocchiNumerici[0] + tocchiNumerici[1];
                     console.log("Numero registrato: " + infoSpettatore.numero);
                 }
@@ -352,7 +353,8 @@
                     ctx.textBaseline = 'middle';
 
                     // Il testo dinamico che apparirà sulla lavagna
-                    let testoFinale = `${infoSpettatore.nome} PENSERAI AL ${infoSpettatore.numero}`;
+                    let testoFinale = `${infoSpettatore.nome} penserai al ${infoSpettatore.numero}`;
+
                     
                     // Funzione per scrivere il testo andando a capo se la lavagna è stretta
                     disegnaTestoMultilinea(ctx, testoFinale, CONFIG.TEXT_X, CONFIG.TEXT_Y, CONFIG.MAX_WIDTH, CONFIG.FONT_SIZE * 1.2);
