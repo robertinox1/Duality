@@ -44,54 +44,41 @@
             outline: none;
         }
 
-        /* Schermata 2: Galleria */
+            /* Schermata 2: Nuova Galleria Stile iPhone */
         #screen-gallery {
             display: none;
             width: 100%;
             height: 100%;
             position: relative;
+            background: #000;
         }
-        #gallery-slider {
-            display: flex;
+
+        /* Contenitore verticale per scorrere le foto (3 colonne) */
+        #gallery-scroll-container {
             width: 100%;
             height: 100%;
-            transition: transform 0.3s ease-out;
+            overflow-y: scroll; /* Permette lo scorrimento in giù */
+            -webkit-overflow-scrolling: touch; /* Rende lo scorrimento fluido su iPhone */
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: calc(100vw / 3); /* Crea quadrati perfetti */
+            gap: 2px;
+            padding-bottom: 40px;
         }
-        .gallery-item {
-            min-width: 100%;
+
+        .gallery-thumb {
+            width: 100%;
             height: 100%;
             position: relative;
+            background: #111;
         }
-        .gallery-item img, .gallery-item video {
+        .gallery-thumb img, .gallery-thumb video {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
-        /* Icona Play finta sul video recente */
-        .play-button-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            background: rgba(0,0,0,0.6);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-        }
-        .play-button-overlay::before {
-            content: '';
-            border-style: solid;
-            border-width: 15px 0 15px 30px;
-            border-color: transparent transparent transparent #fff;
-            margin-left: 8px;
-        }
 
-        /* Griglia invisibile sopra la galleria */
+        /* Griglia invisibile bloccata fissa sullo schermo */
         #invisible-grid {
             position: absolute;
             top: 0;
@@ -102,9 +89,12 @@
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             z-index: 10;
+            pointer-events: none; /* Fa passare il tocco per lo scorrimento */
         }
         .grid-cell {
             background: transparent;
+            pointer-events: auto; /* Riattiva il tocco per registrare il numero */
+            /* border: 1px rgba(255,255,255,0.1) solid; */ /* Togli il commento per vedere i quadrati nei test */
         }
 
         /* Schermata 3: Rivelazione Finale con Canvas */
@@ -126,29 +116,53 @@
             height: 100%;
             object-fit: cover;
         }
+                #btn-save-name {
+            margin-top: 20px;
+            padding: 12px 30px;
+            font-size: 16px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        #btn-save-name:active {
+            background-color: #555; /* Effetto visivo al tocco */
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- S1: INPUT INIZIALE -->
+    
+    <!-- S1: INPUT INIZIALE CON PULSANTE -->
     <div id="screen-input">
         <input type="text" id="spectator-name" placeholder="Inserisci il nome..." autocomplete="off">
+        <!-- Nuovo pulsante invisibile/elegante per andare avanti -->
+        <button id="btn-save-name">AVANTI</button>
     </div>
 
-    <!-- S2: FINTA GALLERIA -->
+       <!-- S2: GALLERIA IPHONE A GRIGLIA -->
     <div id="screen-gallery">
-        <div id="gallery-slider">
-            <!-- Il video è il primo elemento (il più recente) -->
-            <div class="gallery-item" id="video-thumbnail-trigger">
+        <div id="gallery-scroll-container">
+            
+            <!-- Il video recente (Primo quadrato in alto a sinistra) -->
+            <div class="gallery-thumb" id="video-click-target">
                 <video src="video.mp4" muted playsinline></video>
-                <div class="play-button-overlay"></div>
             </div>
-            <!-- Foto reali -->
-            <div class="gallery-item"><img src="foto1.PNG" alt="Foto 1"></div>
-            <div class="gallery-item"><img src="foto2.PNG" alt="Foto 2"></div>
+            
+            <!-- Le tue foto reali (3 per riga) -->
+            <div class="gallery-thumb"><img src="foto1.PNG"></div>
+            <div class="gallery-thumb"><img src="foto2.PNG"></div>
+            <div class="gallery-thumb"><img src="foto2.PNG"></div>
+            <div class="gallery-thumb"><img src="foto1.PNG"></div>
+            <div class="gallery-thumb"><img src="foto2.PNG"></div>
+            <div class="gallery-thumb"><img src="foto1.PNG"></div>
+            <div class="gallery-thumb"><img src="foto2.PNG"></div>
+            <div class="gallery-thumb"><img src="foto1.PNG"></div>
         </div>
-        
-        <!-- Griglia invisibile 1-9 (Senza lo 0) -->
+
+        <!-- Griglia invisibile fissa 1-9 (Senza lo 0 per ora) -->
         <div id="invisible-grid">
             <div class="grid-cell" data-value="1"></div>
             <div class="grid-cell" data-value="2"></div>
@@ -161,6 +175,7 @@
             <div class="grid-cell" data-value="9"></div>
         </div>
     </div>
+
 
     <!-- S3: RIVELAZIONE CANVAS -->
     <div id="screen-video">
@@ -210,48 +225,58 @@
             }
         });
 
-        // --- GESTIONE SCHERMATA 2: GRIGLIA E NAVIGAZIONE GALLERIA ---
+        // --- GESTIONE SCHERMATA 2: NUOVA LOGICA GRIGLIA E SCORRIMENTO ---
         document.querySelectorAll('.grid-cell').forEach(cell => {
             cell.addEventListener('click', function(e) {
-                e.stopPropagation();
+                // Non blocchiamo gli eventi per permettere il movimento dello sfondo
                 let valoreSelezionato = parseInt(this.getAttribute('data-value'));
 
-                // Logica della griglia segreta (Prende i primi due tocchi)
+                // Registra solo i primi due tocchi eseguiti sullo schermo
                 if (tocchiNumerici.length < 2) {
                     tocchiNumerici.push(valoreSelezionato);
 
                     if (tocchiNumerici.length === 2) {
-                        // Unisce i due tocchi per formare il numero (es: tocco 4 poi 7 = "47")
+                        // Unisce i due tocchi per generare la stringa del numero (es. 4 e 7 = "47")
                         infoSpettatore.numero = `${tocchiNumerici[0]}${tocchiNumerici[1]}`;
-                        console.log("Numero registrato con successo:", infoSpettatore.numero);
+                        console.log("Numero segreto memorizzato:", infoSpettatore.numero);
                     }
                 }
-
-                // Giustificazione estetica: muoviamo la galleria per simulare lo scorrimento delle foto
-                if (fotoCorrente < totaleElementiGalleria - 1) {
-                    fotoCorrente++;
-                } else {
-                    fotoCorrente = 0;
-                }
-                slider.style.transform = `translateX(-${fotoCorrente * 100}%)`;
             });
         });
 
-        // Cliccando sul video (Primo elemento della galleria) parte la rivelazione
-        document.getElementById('video-thumbnail-trigger').addEventListener('click', function(e) {
+        // APERTURA E SBLOCCO DEL VIDEO (Ottimizzato per iOS e Safari)
+        document.getElementById('video-click-target').addEventListener('click', function(e) {
+            // Impedisce che il tocco sul video attivi anche la griglia invisibile sottostante
+            e.stopPropagation(); 
+            
             screenGallery.style.display = 'none';
             screenVideo.style.display = 'block';
             
-            // Configura le dimensioni del Canvas identiche al video reale
+            // Sblocca preventivamente l'elemento video nativo caricando la sorgente
+            video.pause();
+            video.src = "video.mp4";
+            video.load();
+
+            // Configura le dimensioni del Canvas basandoti sul file video reale
             video.addEventListener('loadedmetadata', function() {
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
-            });
+            }, { once: true });
 
-            // Avvia la riproduzione del video e il loop di disegno
-            video.play();
-            renderLoop();
+            // Esegue l'avvio del video forzando le politiche restrittive dei browser mobili
+            let playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    renderLoop();
+                }).catch(error => {
+                    console.log("Riproduzione inizialmente bloccata:", error);
+                    // Tentativo di riproduzione forzata secondario
+                    video.play();
+                    renderLoop();
+                });
+            }
         });
+
 
         // --- GESTIONE SCHERMATA 3: CANVAS E SOVRASCRITTURA DEL TESTO ---
         function renderLoop() {
