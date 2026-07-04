@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Galleria</title>
+    <style>
+        /* Caricamento del font personalizzato */
+        @font-face {
+            font-family: 'MagicFont';
+            src: url('font.ttf') format('truetype');
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Schermata 1: Input Nome */
+        #screen-input {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background: #111;
+        }
+        #spectator-name {
+            width: 80%;
+            padding: 15px;
+            font-size: 20px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #222;
+            color: #fff;
+            text-align: center;
+            outline: none;
+        }
+
+        /* Schermata 2: Galleria */
+        #screen-gallery {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        #gallery-slider {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease-out;
+        }
+        .gallery-item {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .gallery-item img, .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Icona Play finta sul video recente */
+        .play-button-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+        .play-button-overlay::before {
+            content: '';
+            border-style: solid;
+            border-width: 15px 0 15px 30px;
+            border-color: transparent transparent transparent #fff;
+            margin-left: 8px;
+        }
+
+        /* Griglia invisibile sopra la galleria */
+        #invisible-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            z-index: 10;
+        }
+        .grid-cell {
+            background: transparent;
+        }
+
+        /* Schermata 3: Rivelazione Finale con Canvas */
+        #screen-video {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #000;
+        }
+        #main-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none; 
+        }
+        #video-canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- S1: INPUT INIZIALE -->
+    <div id="screen-input">
+        <input type="text" id="spectator-name" placeholder="Inserisci il nome..." autocomplete="off">
+    </div>
+
+    <!-- S2: FINTA GALLERIA -->
+    <div id="screen-gallery">
+        <div id="gallery-slider">
+            <!-- Il video è il primo elemento (il più recente) -->
+            <div class="gallery-item" id="video-thumbnail-trigger">
+                <video src="video.mp4" muted playsinline></video>
+                <div class="play-button-overlay"></div>
+            </div>
+            <!-- Foto reali -->
+            <div class="gallery-item"><img src="foto1.PNG" alt="Foto 1"></div>
+            <div class="gallery-item"><img src="foto2.PNG" alt="Foto 2"></div>
+        </div>
+        
+        <!-- Griglia invisibile 1-9 (Senza lo 0) -->
+        <div id="invisible-grid">
+            <div class="grid-cell" data-value="1"></div>
+            <div class="grid-cell" data-value="2"></div>
+            <div class="grid-cell" data-value="3"></div>
+            <div class="grid-cell" data-value="4"></div>
+            <div class="grid-cell" data-value="5"></div>
+            <div class="grid-cell" data-value="6"></div>
+            <div class="grid-cell" data-value="7"></div>
+            <div class="grid-cell" data-value="8"></div>
+            <div class="grid-cell" data-value="9"></div>
+        </div>
+    </div>
+
+    <!-- S3: RIVELAZIONE CANVAS -->
+    <div id="screen-video">
+        <video id="main-video" src="video.mp4" playsinline></video>
+        <canvas id="video-canvas"></canvas>
+    </div>
+    <script>
+        // --- CONFIGURAZIONE DEL TRUCCO ---
+        const CONFIG = {
+            // Tempo in secondi e millisecondi in cui appare la scritta sulla lavagna
+            // Esempio: 4.35 significa 4 secondi e 350 millisecondi
+            TEMPO_APPARIZIONE: 4.35, 
+            
+            // Posizione del testo sulla lavagna (in pixel basati sul file video originale)
+            TEXT_X: 540,  // Coordinata X del centro della lavagna
+            TEXT_Y: 960,  // Coordinata Y della lavagna
+            FONT_SIZE: 50, // Dimensione del font
+            FONT_COLOR: '#111111', // Colore stile pennarello nero
+            MAX_WIDTH: 400 // Larghezza massima della scritta prima di andare a capo
+        };
+
+        // --- VARIABILI DI STATO ---
+        let infoSpettatore = { nome: '', numero: '' };
+        let tocchiNumerici = [];
+        let fotoCorrente = 0;
+        const totaleElementiGalleria = 3; // Video + Foto 1 + Foto 2
+
+        // Elementi DOM
+        const inputNome = document.getElementById('spectator-name');
+        const screenInput = document.getElementById('screen-input');
+        const screenGallery = document.getElementById('screen-gallery');
+        const screenVideo = document.getElementById('screen-video');
+        const slider = document.getElementById('gallery-slider');
+        const video = document.getElementById('main-video');
+        const canvas = document.getElementById('video-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // --- GESTIONE SCHERMATA 1: INPUT NOME ---
+        inputNome.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && this.value.trim() !== '') {
+                infoSpettatore.nome = this.value.trim().toUpperCase();
+                screenInput.style.display = 'none';
+                screenGallery.style.display = 'block';
+                // Forza il caricamento preventivo del font sul canvas per evitare ritardi
+                ctx.font = "10px MagicFont";
+                ctx.fillText("preload", 0, 0);
+            }
+        });
+
+        // --- GESTIONE SCHERMATA 2: GRIGLIA E NAVIGAZIONE GALLERIA ---
+        document.querySelectorAll('.grid-cell').forEach(cell => {
+            cell.addEventListener('click', function(e) {
+                e.stopPropagation();
+                let valoreSelezionato = parseInt(this.getAttribute('data-value'));
+
+                // Logica della griglia segreta (Prende i primi due tocchi)
+                if (tocchiNumerici.length < 2) {
+                    tocchiNumerici.push(valoreSelezionato);
+
+                    if (tocchiNumerici.length === 2) {
+                        // Unisce i due tocchi per formare il numero (es: tocco 4 poi 7 = "47")
+                        infoSpettatore.numero = `${tocchiNumerici[0]}${tocchiNumerici[1]}`;
+                        console.log("Numero registrato con successo:", infoSpettatore.numero);
+                    }
+                }
+
+                // Giustificazione estetica: muoviamo la galleria per simulare lo scorrimento delle foto
+                if (fotoCorrente < totaleElementiGalleria - 1) {
+                    fotoCorrente++;
+                } else {
+                    fotoCorrente = 0;
+                }
+                slider.style.transform = `translateX(-${fotoCorrente * 100}%)`;
+            });
+        });
+
+        // Cliccando sul video (Primo elemento della galleria) parte la rivelazione
+        document.getElementById('video-thumbnail-trigger').addEventListener('click', function(e) {
+            screenGallery.style.display = 'none';
+            screenVideo.style.display = 'block';
+            
+            // Configura le dimensioni del Canvas identiche al video reale
+            video.addEventListener('loadedmetadata', function() {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+            });
+
+            // Avvia la riproduzione del video e il loop di disegno
+            video.play();
+            renderLoop();
+        });
+
+        // --- GESTIONE SCHERMATA 3: CANVAS E SOVRASCRITTURA DEL TESTO ---
+        function renderLoop() {
+            if (!video.paused && !video.ended) {
+                // 1. Disegna il frame corrente del video sul canvas
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // 2. Se il timer del video supera il secondo impostato, disegna la scritta
+                if (video.currentTime >= CONFIG.TEMPO_APPARIZIONE) {
+                    ctx.save();
+                    
+                    // Impostazioni del font
+                    ctx.font = `${CONFIG.FONT_SIZE}px 'MagicFont'`;
+                    ctx.fillStyle = CONFIG.FONT_COLOR;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+
+                    // Il testo dinamico che apparirà sulla lavagna
+                    let testoFinale = `${infoSpettatore.nome} PENSERAI AL ${infoSpettatore.numero}`;
+                    
+                    // Funzione per scrivere il testo andando a capo se la lavagna è stretta
+                    disegnaTestoMultilinea(ctx, testoFinale, CONFIG.TEXT_X, CONFIG.TEXT_Y, CONFIG.MAX_WIDTH, CONFIG.FONT_SIZE * 1.2);
+                    
+                    ctx.restore();
+                }
+
+                // Continua a ridisegnare il canvas a ogni frame disponibile
+                requestAnimationFrame(renderLoop);
+            }
+        }
+
+        // Funzione di supporto per formattare il testo su più righe senza tagliare le parole
+        function disegnaTestoMultilinea(context, text, x, y, maxWidth, lineHeight) {
+            let words = text.split(' ');
+            let line = '';
+            let lines = [];
+
+            for (let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + ' ';
+                let metrics = context.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    lines.push(line);
+                    line = words[n] + ' ';
+                } else {
+                    line = testLine;
+                }
+            }
+            lines.push(line);
+
+            // Calcola l'altezza iniziale per centrare perfettamente il blocco di testo in verticale
+            let startY = y - ((lines.length - 1) * lineHeight) / 2;
+
+            for (let k = 0; k < lines.length; k++) {
+                context.fillText(lines[k].trim(), x, startY + (k * lineHeight));
+            }
+        }
+    </script>
+</body>
+</html>
