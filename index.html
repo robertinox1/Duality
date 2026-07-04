@@ -93,7 +93,7 @@
         }
         .grid-cell {
             background: transparent;
-            pointer-events: auto; /* Cattura il click singolo per salvare il numero */
+            pointer-events: none; /* Rilascia totalmente lo schermo per permettere lo scorrimento */
         }
 
 
@@ -229,7 +229,7 @@
         function procediAllaGalleria() {
             let nomeInserito = inputNome.value.trim();
             if (nomeInserito !== '') {
-                infoSpettatore.nome = nomeInserito.toUpperCase();
+               infoSpettatore.nome = nomeInserito.toLowerCase();
                 screenInput.style.display = 'none';
                 screenGallery.style.display = 'block';
                 ctx.font = "10px MagicFont";
@@ -248,29 +248,64 @@
         });
 
 
-        // --- GESTIONE SCHERMATA 2: LOGICA INTERCETTAZIONE TOCCHI E VIDEO ---
-        document.querySelectorAll('.grid-cell').forEach(cell => {
-            cell.addEventListener('click', function(e) {
-                let valoreSelezionato = parseInt(this.getAttribute('data-value'));
+        // --- GESTIONE SCHERMATA 2: TOCCHI INTELLIGENTI CON SCROLL LIBERO ---
+        let startYTouch = 0;
+        let isScrolling = false;
 
-                // Se abbiamo già preso i 2 tocchi per il numero e tocchi la casella 1 (in alto a sinistra), apri il video
-                if (tocchiNumerici.length >= 2 && valoreSelezionato === 1) {
-                    avviaIlVideoMagico();
-                    return;
+        const containerGalleria = document.getElementById('gallery-scroll-container');
+
+        containerGalleria.addEventListener('touchstart', function(e) {
+            startYTouch = e.touches[0].clientY;
+            isScrolling = false;
+        }, { passive: true });
+
+        containerGalleria.addEventListener('touchmove', function(e) {
+            // Se il dito si sposta verticalmente di oltre 10 pixel, l'app capisce che stai scorrendo
+            if (Math.abs(e.touches[0].clientY - startYTouch) > 10) {
+                isScrolling = true;
+            }
+        }, { passive: true });
+
+        containerGalleria.addEventListener('touchend', function(e) {
+            // Se l'utente stava scorrendo la galleria, non registrare nessun numero per il trucco
+            if (isScrolling) return;
+
+            // Prendi il punto esatto dello schermo in cui il dito si è alzato
+            let touch = e.changedTouches[0];
+            let targetX = touch.clientX;
+            let targetY = touch.clientY;
+
+            // Calcola le coordinate relative alla finestra per capire la casella 3x3
+            let widthSezione = window.innerWidth / 3;
+            let heightSezione = window.innerHeight / 3;
+
+            let colonna = Math.floor(targetX / widthSezione); // 0, 1 o 2
+            let riga = Math.floor(targetY / heightSezione);    // 0, 1 o 2
+
+            // Mappatura matematica della griglia da 1 a 9
+            // Riga 0: 1, 2, 3 | Riga 1: 4, 5, 6 | Riga 2: 7, 8, 9
+            let valoreSelezionato = (riga * 3) + colonna + 1;
+
+            // Limita la griglia nel caso di tocchi millimetrici fuori bordo
+            if (valoreSelezionato < 1 || valoreSelezionato > 9) return;
+
+            // Se abbiamo già preso i 2 tocchi per il numero e l'utente tocca la zona 1 (in alto a sinistra), apri il video
+            if (tocchiNumerici.length >= 2 && valoreSelezionato === 1) {
+                avviaIlVideoMagico();
+                return;
+            }
+
+            // Registra le due cifre
+            if (tocchiNumerici.length < 2) {
+                tocchiNumerici.push(valoreSelezionato);
+
+                if (tocchiNumerici.length === 2) {
+                    infoSpettatore.numero = "" + tocchiNumerici[0] + tocchiNumerici[1];
+                    console.log("Numero registrato: " + infoSpettatore.numero);
                 }
-
-                // Registra i primi due tocchi eseguiti sullo schermo per formare il numero
-                if (tocchiNumerici.length < 2) {
-                    tocchiNumerici.push(valoreSelezionato);
-
-                    if (tocchiNumerici.length === 2) {
-                        // Unisce le due cifre in una stringa pulita (es. tocco 4 e tocco 7 = "47")
-                        infoSpettatore.numero = "" + tocchiNumerici[0] + tocchiNumerici[1];
-                        console.log("Numero registrato con successo: " + infoSpettatore.numero);
-                    }
-                }
-            });
+            }
         });
+
 
         function avviaIlVideoMagico() {
             screenGallery.style.display = 'none';
