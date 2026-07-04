@@ -248,64 +248,45 @@
         });
 
 
-        // --- GESTIONE SCHERMATA 2: TOCCHI INTELLIGENTI CON SCROLL LIBERO ---
-        let startYTouch = 0;
-        let isScrolling = false;
-
+                // --- GESTIONE SCHERMATA 2: CATTURA ISTANTANEA AL TOCCO INIZIALE ---
         const containerGalleria = document.getElementById('gallery-scroll-container');
 
         containerGalleria.addEventListener('touchstart', function(e) {
-            startYTouch = e.touches[0].clientY;
-            isScrolling = false;
-        }, { passive: true });
-
-        containerGalleria.addEventListener('touchmove', function(e) {
-            // Se il dito si sposta verticalmente di oltre 10 pixel, l'app capisce che stai scorrendo
-            if (Math.abs(e.touches[0].clientY - startYTouch) > 10) {
-                isScrolling = true;
-            }
-        }, { passive: true });
-
-        containerGalleria.addEventListener('touchend', function(e) {
-            // Se l'utente stava scorrendo la galleria, non registrare nessun numero per il trucco
-            if (isScrolling) return;
-
-            // Prendi il punto esatto dello schermo in cui il dito si è alzato
-            let touch = e.changedTouches[0];
+            // Prendiamo il punto esatto dello schermo dove il dito si è appena appoggiato
+            let touch = e.touches[0];
             let targetX = touch.clientX;
             let targetY = touch.clientY;
 
-            // Calcola le coordinate relative alla finestra per capire la casella 3x3
+            // Dividiamo lo schermo del telefono in una griglia 3x3 pulita
             let widthSezione = window.innerWidth / 3;
             let heightSezione = window.innerHeight / 3;
 
             let colonna = Math.floor(targetX / widthSezione); // 0, 1 o 2
             let riga = Math.floor(targetY / heightSezione);    // 0, 1 o 2
 
-            // Mappatura matematica della griglia da 1 a 9
-            // Riga 0: 1, 2, 3 | Riga 1: 4, 5, 6 | Riga 2: 7, 8, 9
+            // Converte le coordinate in un numero da 1 a 9
             let valoreSelezionato = (riga * 3) + colonna + 1;
 
-            // Limita la griglia nel caso di tocchi millimetrici fuori bordo
+            // Sicurezza per evitare tocchi millimetrici fuori dai bordi dello schermo
             if (valoreSelezionato < 1 || valoreSelezionato > 9) return;
 
-            // Se abbiamo già preso i 2 tocchi per il numero e l'utente tocca la zona 1 (in alto a sinistra), apri il video
+            // Se abbiamo già preso le 2 cifre del numero e tocchi la zona 1 (alto a sinistra), lancia il video
             if (tocchiNumerici.length >= 2 && valoreSelezionato === 1) {
                 avviaIlVideoMagico();
                 return;
             }
 
-            // Registra le due cifre
+            // Registra le cifre (solo per i primi due appoggi del dito)
             if (tocchiNumerici.length < 2) {
                 tocchiNumerici.push(valoreSelezionato);
 
-                               if (tocchiNumerici.length === 2) {
-                    // Prende la prima cifra (indice 0) e la seconda cifra (indice 1)
+                if (tocchiNumerici.length === 2) {
+                    // Unisce la prima e la seconda cifra in una stringa di testo
                     infoSpettatore.numero = "" + tocchiNumerici[0] + tocchiNumerici[1];
-                    console.log("Numero registrato: " + infoSpettatore.numero);
+                    console.log("Numero segreto memorizzato al volo: " + infoSpettatore.numero);
                 }
             }
-        });
+        }, { passive: true }); // 'passive: true' garantisce che lo scorrimento di iOS rimanga fluidissimo
 
 
         function avviaIlVideoMagico() {
