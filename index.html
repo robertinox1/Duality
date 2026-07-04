@@ -78,7 +78,7 @@
             object-fit: cover;
         }
 
-        /* Griglia invisibile bloccata fissa sullo schermo */
+            /* Griglia invisibile bloccata fissa sullo schermo */
         #invisible-grid {
             position: absolute;
             top: 0;
@@ -89,13 +89,13 @@
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             z-index: 10;
-            pointer-events: none; /* Fa passare il tocco per lo scorrimento */
+            pointer-events: none; /* Lascia libero lo scorrimento verticale dello sfondo */
         }
         .grid-cell {
             background: transparent;
-            pointer-events: auto; /* Riattiva il tocco per registrare il numero */
-            /* border: 1px rgba(255,255,255,0.1) solid; */ /* Togli il commento per vedere i quadrati nei test */
+            pointer-events: auto; /* Cattura il click singolo per salvare il numero */
         }
+
 
         /* Schermata 3: Rivelazione Finale con Canvas */
         #screen-video {
@@ -213,69 +213,81 @@
         const canvas = document.getElementById('video-canvas');
         const ctx = canvas.getContext('2d');
 
-        // --- GESTIONE SCHERMATA 1: INPUT NOME ---
-        inputNome.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && this.value.trim() !== '') {
-                infoSpettatore.nome = this.value.trim().toUpperCase();
+             // --- GESTIONE SCHERMATA 1: INPUT NOME ---
+        const btnSalva = document.getElementById('btn-save-name');
+
+        function procediAllaGalleria() {
+            let nomeInserito = inputNome.value.trim();
+            if (nomeInserito !== '') {
+                infoSpettatore.nome = nomeInserito.toUpperCase();
                 screenInput.style.display = 'none';
                 screenGallery.style.display = 'block';
-                // Forza il caricamento preventivo del font sul canvas per evitare ritardi
                 ctx.font = "10px MagicFont";
                 ctx.fillText("preload", 0, 0);
             }
+        }
+
+        // Attiva il pulsante AVANTI al tocco
+        btnSalva.addEventListener('click', procediAllaGalleria);
+
+        // Mantiene l'invio da tastiera
+        inputNome.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                procediAllaGalleria();
+            }
         });
 
-        // --- GESTIONE SCHERMATA 2: NUOVA LOGICA GRIGLIA E SCORRIMENTO ---
+
+        // --- GESTIONE SCHERMATA 2: LOGICA INTERCETTAZIONE TOCCHI E VIDEO ---
         document.querySelectorAll('.grid-cell').forEach(cell => {
             cell.addEventListener('click', function(e) {
-                // Non blocchiamo gli eventi per permettere il movimento dello sfondo
                 let valoreSelezionato = parseInt(this.getAttribute('data-value'));
 
-                // Registra solo i primi due tocchi eseguiti sullo schermo
+                // Se abbiamo già preso i 2 tocchi per il numero e tocchi la casella 1 (in alto a sinistra), apri il video
+                if (tocchiNumerici.length >= 2 && valoreSelezionato === 1) {
+                    avviaIlVideoMagico();
+                    return;
+                }
+
+                // Registra i primi due tocchi eseguiti sullo schermo per formare il numero
                 if (tocchiNumerici.length < 2) {
                     tocchiNumerici.push(valoreSelezionato);
 
                     if (tocchiNumerici.length === 2) {
-                        // Unisce i due tocchi per generare la stringa del numero (es. 4 e 7 = "47")
-                        infoSpettatore.numero = `${tocchiNumerici[0]}${tocchiNumerici[1]}`;
-                        console.log("Numero segreto memorizzato:", infoSpettatore.numero);
+                        // Unisce le due cifre in una stringa pulita (es. tocco 4 e tocco 7 = "47")
+                        infoSpettatore.numero = "" + tocchiNumerici[0] + tocchiNumerici[1];
+                        console.log("Numero registrato con successo: " + infoSpettatore.numero);
                     }
                 }
             });
         });
 
-        // APERTURA E SBLOCCO DEL VIDEO (Ottimizzato per iOS e Safari)
-        document.getElementById('video-click-target').addEventListener('click', function(e) {
-            // Impedisce che il tocco sul video attivi anche la griglia invisibile sottostante
-            e.stopPropagation(); 
-            
+        function avviaIlVideoMagico() {
             screenGallery.style.display = 'none';
             screenVideo.style.display = 'block';
             
-            // Sblocca preventivamente l'elemento video nativo caricando la sorgente
-            video.pause();
+            // Forziamo i parametri indispensabili per Apple Safari / iPhone
+            video.setAttribute('playsinline', 'true');
+            video.setAttribute('webkit-playsinline', 'true');
             video.src = "video.mp4";
             video.load();
 
-            // Configura le dimensioni del Canvas basandoti sul file video reale
             video.addEventListener('loadedmetadata', function() {
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
             }, { once: true });
 
-            // Esegue l'avvio del video forzando le politiche restrittive dei browser mobili
             let playPromise = video.play();
             if (playPromise !== undefined) {
                 playPromise.then(_ => {
                     renderLoop();
                 }).catch(error => {
-                    console.log("Riproduzione inizialmente bloccata:", error);
-                    // Tentativo di riproduzione forzata secondario
+                    // Secondo tentativo forzato se il sistema operativo lo blocca inizialmente
                     video.play();
                     renderLoop();
                 });
             }
-        });
+        }
 
 
         // --- GESTIONE SCHERMATA 3: CANVAS E SOVRASCRITTURA DEL TESTO ---
