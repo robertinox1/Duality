@@ -8,7 +8,7 @@
         /* Caricamento del font personalizzato */
         @font-face {
             font-family: 'MagicFont';
-            src: url('font.ttf') format('truetype');
+            src: url('Lacquer-Regular.ttf') format('truetype');
         }
 
         body, html {
@@ -151,7 +151,7 @@
                 <video src="video.mp4" muted playsinline></video>
             </div>
             
-            <!-- Le tue foto reali (3 per riga) -->
+        <!-- Molte più foto per costringere lo schermo a scorrere in basso -->
             <div class="gallery-thumb"><img src="foto1.PNG"></div>
             <div class="gallery-thumb"><img src="foto2.PNG"></div>
             <div class="gallery-thumb"><img src="foto2.PNG"></div>
@@ -160,6 +160,16 @@
             <div class="gallery-thumb"><img src="foto1.PNG"></div>
             <div class="gallery-thumb"><img src="foto2.PNG"></div>
             <div class="gallery-thumb"><img src="foto1.PNG"></div>
+            <div class="gallery-thumb"><img src="foto1.PNG"></div>
+            <div class="gallery-thumb"><img src="foto2.PNG"></div>
+            <div class="gallery-thumb"><img src="foto2.PNG"></div>
+            <div class="gallery-thumb"><img src="foto1.PNG"></div>
+            <div class="gallery-thumb"><img src="foto2.PNG"></div>
+            <div class="gallery-thumb"><img src="foto1.PNG"></div>
+            <div class="gallery-thumb"><img src="foto2.PNG"></div>
+            <div class="gallery-thumb"><img src="foto1.PNG"></div>
+            <div class="gallery-thumb"><img src="foto1.PNG"></div>
+            <div class="gallery-thumb"><img src="foto2.PNG"></div>
         </div>
 
         <!-- Griglia invisibile fissa 1-9 (Senza lo 0 per ora) -->
@@ -187,11 +197,11 @@
         const CONFIG = {
             // Tempo in secondi e millisecondi in cui appare la scritta sulla lavagna
             // Esempio: 4.35 significa 4 secondi e 350 millisecondi
-            TEMPO_APPARIZIONE: 4.35, 
+            TEMPO_APPARIZIONE: 5.66, 
             
             // Posizione del testo sulla lavagna (in pixel basati sul file video originale)
-            TEXT_X: 540,  // Coordinata X del centro della lavagna
-            TEXT_Y: 960,  // Coordinata Y della lavagna
+            TEXT_X: 440,  // Coordinata X del centro della lavagna
+            TEXT_Y: 700,  // Coordinata Y della lavagna
             FONT_SIZE: 50, // Dimensione del font
             FONT_COLOR: '#111111', // Colore stile pennarello nero
             MAX_WIDTH: 400 // Larghezza massima della scritta prima di andare a capo
