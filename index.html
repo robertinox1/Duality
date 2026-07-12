@@ -20,6 +20,11 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             overflow: hidden;
             user-select: none;
+                        /* Forzatura chirurgica anti-Safe Area di Apple */
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+            -webkit-text-size-adjust: 100%;
+
         }
 
         /* Schermata 1: Input Nome */
@@ -46,12 +51,15 @@
 
             /* Schermata 2: Nuova Galleria Stile iPhone */
         #screen-gallery {
-             opacity: 0;
+            opacity: 0;
             width: 100%;
             height: 100%;
-            position: relative;
+            position: absolute; /* Cambiato in absolute per sbloccare i bordi */
+            top: 0;
+            left: 0;
             background: #000;
         }
+
 
              /* Contenitore verticale per scorrere le foto (3 colonne) */
         #gallery-scroll-container {
