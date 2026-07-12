@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Galleria</title>
-        <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
     <style>
         /* Caricamento del font personalizzato */
         @font-face {
@@ -69,6 +66,27 @@
            box-sizing: border-box;
             padding-bottom: 50px;
         }
+                /* MODIFICA CHIRURGICA: Intestazione blindata e ancorata allo schermo */
+        .ios-gallery-header {
+            position: fixed; /* Impedisce tassativamente alla scritta di muoversi durante lo scroll */
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 55px 20px 15px 20px; /* Margini calibrati per la parte alta del telefono */
+            box-sizing: border-box;
+            
+            /* Sfondo semitrasparente sfocato nativo iOS */
+            background: rgba(0, 0, 0, 0.70); 
+            backdrop-filter: blur(30px); 
+            -webkit-backdrop-filter: blur(30px);
+            
+            z-index: 99; /* Valore altissimo per stare sopra a qualunque griglia o foto */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            pointer-events: none; /* Consente al dito dello spettatore di scorrere le foto sottostanti */
+        }
+
 
         .gallery-thumb {
             width: 100%;
@@ -150,9 +168,17 @@
         <button id="btn-save-name">AVANTI</button>
     </div>
 
-       <!-- S2: GALLERIA IPHONE A GRIGLIA -->
+             <!-- S2: GALLERIA IPHONE A GRIGLIA -->
     <div id="screen-gallery">
+        
+        <!-- MODIFICA CHIRURGICA: Intestazione Libreria fissa in alto -->
+        <div class="ios-gallery-header">
+            <h1 class="ios-gallery-title">Libreria</h1>
+            <span class="ios-gallery-subtitle">1541 elementi</span>
+        </div>
+
         <div id="gallery-scroll-container">
+
             
 
             
