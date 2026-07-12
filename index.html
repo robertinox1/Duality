@@ -66,26 +66,44 @@
            box-sizing: border-box;
             padding-bottom: 50px;
         }
-                /* MODIFICA CHIRURGICA: Intestazione blindata e ancorata allo schermo */
+        /* MODIFICA CHIRURGICA: Intestazione fissa trasparente senza alcuna sfumatura */
         .ios-gallery-header {
-            position: fixed; /* Impedisce tassativamente alla scritta di muoversi durante lo scroll */
+            position: fixed; 
             top: 0;
             left: 0;
             width: 100%;
-            padding: 55px 20px 15px 20px; /* Margini calibrati per la parte alta del telefono */
+            padding: 55px 20px 0px 20px; /* Ridotto lo spazio sul fondo per stringere */
             box-sizing: border-box;
             
-            /* Sfondo semitrasparente sfocato nativo iOS */
-            background: rgba(0, 0, 0, 0.70); 
-            backdrop-filter: blur(30px); 
-            -webkit-backdrop-filter: blur(30px);
+            /* Sfondo completamente invisibile (nessuna sfocatura o colore) */
+            background: transparent; 
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
             
-            z-index: 99; /* Valore altissimo per stare sopra a qualunque griglia o foto */
+            z-index: 99; 
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            pointer-events: none; /* Consente al dito dello spettatore di scorrere le foto sottostanti */
+            pointer-events: none; 
         }
+
+        /* Stile dei testi interni bianchi e attaccati */
+        .ios-gallery-header h1 {
+            color: #ffffff; /* Scritta bianca pulita */
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+            line-height: 1.1; /* Stringe lo spazio verticale del titolo */
+        }
+        .ios-gallery-header span {
+            color: #ffffff; /* Modificata in bianco pieno */
+            font-size: 13px;
+            font-weight: 400;
+            margin-top: -2px; /* Avvicina il sottotitolo alla scritta sopra */
+            line-height: 1.1;
+        }
+
 
 
         .gallery-thumb {
