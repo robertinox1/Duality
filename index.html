@@ -130,6 +130,132 @@
         #btn-save-name:active {
             background-color: #555; /* Effetto visivo al tocco */
         }
+                /* Contenitore principale interfaccia video */
+        #video-controls-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            padding: 50px 20px 40px 20px;
+            pointer-events: none; /* Evita di bloccare i tocchi sul canvas */
+            transition: opacity 0.4s ease; /* Animazione di sparizione */
+            opacity: 1;
+        }
+
+        /* Stile base delle Bubble Apple */
+        .ios-bubble {
+            background: rgba(40, 40, 40, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+        }
+
+        /* Barra Superiore */
+        .ios-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .btn-back, .btn-more {
+            width: 38px;
+            height: 38px;
+            font-size: 16px;
+        }
+        .ios-center-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+        }
+        .ios-date { font-size: 15px; font-weight: 600; }
+        .ios-time { font-size: 11px; color: #aaa; margin-top: 2px; }
+
+        /* Controlli specifici del Video (Muto, Play, Durata) */
+        .ios-video-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: auto;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .btn-play, .btn-mute {
+            width: 34px;
+            height: 34px;
+            font-size: 14px;
+        }
+        .ios-video-timeline {
+            background: rgba(40, 40, 40, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-family: -apple-system, sans-serif;
+        }
+
+        /* Carosello miniature ultime foto */
+        .ios-photo-strip {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .strip-thumb {
+            width: 45px;
+            height: 30px;
+            background: rgba(60, 60, 60, 0.5);
+            border-radius: 4px;
+        }
+        .strip-thumb.active {
+            border: 1.5px solid #fff;
+        }
+
+        /* Barra Inferiore */
+        .ios-bottom-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .btn-share, .btn-delete {
+            width: 38px;
+            height: 38px;
+            font-size: 16px;
+        }
+        .ios-center-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .btn-heart, .btn-info {
+            width: 38px;
+            height: 38px;
+            font-size: 16px;
+        }
+        .btn-edit {
+            padding: 0 15px;
+            border-radius: 20px;
+            height: 38px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
 
     </style>
 </head>
@@ -191,11 +317,52 @@
     </div>
 
 
-    <!-- S3: RIVELAZIONE CANVAS -->
+      <!-- S3: RIVELAZIONE CANVAS -->
     <div id="screen-video">
         <video id="main-video" src="video.mp4" playsinline></video>
         <canvas id="video-canvas"></canvas>
+
+        <!-- INTERFACCIA VIDEO STILE IPHONE (BUBBLES) -->
+        <div id="video-controls-overlay">
+            <!-- Barra Superiore -->
+            <div class="ios-top-bar">
+                <div class="ios-bubble btn-back">〈</div>
+                <div class="ios-center-meta">
+                    <span class="ios-date">Ieri</span>
+                    <span class="ios-time">18:45</span>
+                </div>
+                <div class="ios-bubble btn-more">•••</div>
+            </div>
+
+            <!-- Controlli Video Centrali/Bassi -->
+            <div class="ios-video-controls">
+                <div class="ios-bubble btn-play">⏸</div>
+                <div class="ios-video-timeline">0:00</div>
+                <div class="ios-bubble btn-mute">🔊</div>
+            </div>
+
+            <!-- Carosello ultime foto (Anteprima rapida) -->
+            <div class="ios-photo-strip">
+                <div class="strip-thumb active"></div>
+                <div class="strip-thumb"></div>
+                <div class="strip-thumb"></div>
+                <div class="strip-thumb"></div>
+                <div class="strip-thumb"></div>
+            </div>
+
+            <!-- Barra Inferiore delle Azioni -->
+            <div class="ios-bottom-bar">
+                <div class="ios-bubble btn-share">⎋</div>
+                <div class="ios-center-actions">
+                    <div class="ios-bubble btn-heart">♡</div>
+                    <div class="ios-bubble btn-info">ⓘ</div>
+                    <div class="ios-bubble btn-edit">Modifica</div>
+                </div>
+                <div class="ios-bubble btn-delete">🗑</div>
+            </div>
+        </div>
     </div>
+
     <script>
         // --- CONFIGURAZIONE DEL TRUCCO ---
         const CONFIG = {
@@ -311,16 +478,28 @@
                 canvas.height = video.videoHeight;
             }, { once: true });
 
-            let playPromise = video.play();
+                      let playPromise = video.play();
             if (playPromise !== undefined) {
                 playPromise.then(_ => {
                     renderLoop();
+                    
+                    // MODIFICA CHIRURGICA: Fa sparire le bolle dopo 2.5 secondi (2500 millisecondi)
+                    setTimeout(() => {
+                        const overlay = document.getElementById('video-controls-overlay');
+                        if (overlay) overlay.style.opacity = '0';
+                    }, 2500);
+
                 }).catch(error => {
-                    // Secondo tentativo forzato se il sistema operativo lo blocca inizialmente
                     video.play();
                     renderLoop();
+                    
+                    setTimeout(() => {
+                        const overlay = document.getElementById('video-controls-overlay');
+                        if (overlay) overlay.style.opacity = '0';
+                    }, 2500);
                 });
             }
+
         }
 
 
