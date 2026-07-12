@@ -109,17 +109,17 @@
              #main-video {
             display: none; 
         }
-        #video-canvas {
-            width: 100%;
-            /* MODIFICA CHIRURGICA: Imposta l'altezza massima basata sulla larghezza (proporzione 16:9 verticale) */
-            height: calc(100vw * (16 / 9)); 
-            max-height: 80vh; /* Impedisce al video di toccare i bordi estremi alti e bassi */
-            object-fit: contain; /* Mantiene le proporzioni reali del file video senza allungarlo */
+               #video-canvas {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* Centra perfettamente il video nello schermo */
+            left: 0;
+            width: 100%; /* Blocca la larghezza totale da lato a lato */
+            object-fit: cover; /* Taglia leggermente sopra e sotto se necessario, senza deformare il video */
+
+            /* PARAMETRI DA REGOLARE MANO MANO: */
+            top: 70px;      /* Decidi quanti pixel di spazio nero lasciare in ALTO */
+            height: 72%;    /* Decidi l'ALTEZZA verticale del video (puoi usare % o px, es. 550px) */
         }
+
 
                 #btn-save-name {
             margin-top: 20px;
