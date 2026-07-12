@@ -44,35 +44,28 @@
             outline: none;
         }
 
-        /* Schermata 2: Ora è nascosta all'avvio con display: none */
+            /* Schermata 2: Nuova Galleria Stile iPhone */
         #screen-gallery {
-            display: none; /* Evita di coprire la schermata di input all'inizio */
+             opacity: 0;
             width: 100%;
             height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
+            position: relative;
             background: #000;
         }
 
-        /* Contenitore foto agganciato al pixel zero in alto */
+        /* Contenitore verticale per scorrere le foto (3 colonne) */
         #gallery-scroll-container {
             width: 100%;
             height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            overflow-y: scroll; 
-            -webkit-overflow-scrolling: touch; 
+            overflow-y: scroll; /* Permette lo scorrimento in giù */
+            -webkit-overflow-scrolling: touch; /* Rende lo scorrimento fluido su iPhone */
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            grid-auto-rows: calc(100vw / 3); 
+            grid-auto-rows: calc(100vw / 3); /* Crea quadrati perfetti */
             gap: 1px;
-            box-sizing: border-box;
-            padding-top: 0px; /* Le foto partono da sopra a tutto */
+           box-sizing: border-box;
             padding-bottom: 50px;
         }
-
         /* MODIFICA CHIRURGICA: Intestazione fissa trasparente senza alcuna sfumatura */
         .ios-gallery-header {
             position: fixed; 
@@ -292,7 +285,7 @@
             let nomeInserito = inputNome.value.trim();
             if (nomeInserito !== '') {
                infoSpettatore.nome = nomeInserito.toLowerCase();
-                screenInput.style.display = 'block';
+                screenInput.style.display = 'none';
                 screenGallery.style.opacity = '1';
                 screenGallery.style.pointerEvents = 'auto';
                 containerGalleria.scrollTop = containerGalleria.scrollHeight;
