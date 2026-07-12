@@ -44,42 +44,46 @@
             outline: none;
         }
 
-            /* Schermata 2: Nuova Galleria Stile iPhone */
+        /* 1. FORZATURA SULLO SCHERMO INTERO */
         #screen-gallery {
-             opacity: 0;
+            opacity: 0;
             width: 100%;
             height: 100%;
-            position: relative;
+            position: absolute; /* Cambiato da relative a absolute per agganciare il top assoluto */
+            top: 0;
+            left: 0;
             background: #000;
         }
 
-        /* Contenitore verticale per scorrere le foto (3 colonne) */
+        /* 2. GRIGLIA FOTO: Eliminato ogni vincolo, agganciata al top 0 */
         #gallery-scroll-container {
             width: 100%;
-            height: 100%;
-            overflow-y: scroll; /* Permette lo scorrimento in giù */
-            -webkit-overflow-scrolling: touch; /* Rende lo scorrimento fluido su iPhone */
+            height: 100vh; /* Forza l'altezza all'altezza totale dello schermo */
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow-y: scroll; 
+            -webkit-overflow-scrolling: touch; 
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            grid-auto-rows: calc(100vw / 3); /* Crea quadrati perfetti */
+            grid-auto-rows: calc(100vw / 3); 
             gap: 1px;
-           box-sizing: border-box;
-            padding-bottom: 50px;
+            box-sizing: border-box;
+            padding-top: 0px; /* Assicura che la prima riga di foto sia a filo con lo schermo */
+            padding-bottom: 100px; /* Spazio in fondo per scorrere oltre l'ultima foto */
         }
-        /* MODIFICA CHIRURGICA: Intestazione fissa trasparente senza alcuna sfumatura */
+
+        /* 3. INTESTAZIONE TRASPARENTE: Fluttua sopra le foto senza spostarle */
         .ios-gallery-header {
             position: fixed; 
             top: 0;
             left: 0;
             width: 100%;
-            padding: 0px 20px 0px 20px; /* Ridotto lo spazio sul fondo per stringere */
+            padding: 0px 20px 0px 20px; 
             box-sizing: border-box;
-            
-            /* Sfondo completamente invisibile (nessuna sfocatura o colore) */
             background: transparent; 
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
-            
             z-index: 99; 
             display: flex;
             flex-direction: column;
@@ -87,15 +91,16 @@
             pointer-events: none; 
         }
 
-        /* Stile dei testi interni bianchi e attaccati */
+        /* Sposta solo la scritta sotto la Dynamic Island, le foto dietro sono libere */
         .ios-gallery-header h1 {
-            color: #ffffff; /* Scritta bianca pulita */
+            color: #ffffff; 
             font-size: 28px;
             font-weight: 700;
-            margin: 0;
+            margin-top: 55px; /* Alza o abbassa questo valore per centrare la scritta sotto la tua isola */
             letter-spacing: -0.5px;
-            line-height: 1.1; /* Stringe lo spazio verticale del titolo */
+            line-height: 1.1; 
         }
+
         .ios-gallery-header span {
             color: #ffffff; /* Modificata in bianco pieno */
             font-size: 13px;
