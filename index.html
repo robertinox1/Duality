@@ -31,6 +31,7 @@
             width: 100%;
             height: 100%;
             background: #111;
+            z-index: 100;
         }
         #spectator-name {
             width: 80%;
@@ -48,9 +49,11 @@
         #screen-gallery {
              opacity: 0;
             width: 100%;
-            height: 100%;
-            position: relative;
             background: #000;
+             position: absolute;
+            top: 0;
+            height: calc(100vh + 60px);
+            margin-top: -60px;
         }
 
         /* Contenitore verticale per scorrere le foto (3 colonne) */
