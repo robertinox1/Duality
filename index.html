@@ -140,27 +140,45 @@
         }
 
 
-        /* Schermata 3: Rivelazione Finale con Canvas */
+              /* Schermata 3: Rivelazione Finale con Canvas e Zoom Fluido */
         #screen-video {
-            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            position: relative;
             background: #000;
+            z-index: 200;
+            
+            /* Stato iniziale nascosto e rimpicciolito */
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+            
+            /* Transizione fluida stile iOS */
+            transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
-             #main-video {
+        
+        /* Classe per attivare l'animazione */
+        #screen-video.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        #main-video {
             display: none; 
         }
-               #video-canvas {
+
+        #video-canvas {
             position: absolute;
             left: 0;
-            width: 100%; /* Blocca la larghezza totale da lato a lato */
-            object-fit: cover; /* Taglia leggermente sopra e sotto se necessario, senza deformare il video */
-
-            /* PARAMETRI DA REGOLARE MANO MANO: */
-            top: 30px;      /* Decidi quanti pixel di spazio nero lasciare in ALTO */
-            height: 86%;    /* Decidi l'ALTEZZA verticale del video (puoi usare % o px, es. 550px) */
+            width: 100%; 
+            object-fit: cover; 
+            top: 30px;      
+            height: 86%;    
         }
+
 
 
                 #btn-save-name {
@@ -351,8 +369,7 @@
 
 
         function avviaIlVideoMagico() {
-            screenGallery.style.display = 'none';
-            screenVideo.style.display = 'block';
+         screenVideo.classList.add('active');
             
             // Forziamo i parametri indispensabili per Apple Safari / iPhone
             video.setAttribute('playsinline', 'true');
