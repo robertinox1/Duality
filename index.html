@@ -140,28 +140,28 @@
         }
 
 
-        /* Schermata 3: Espansione fluida dal punto di tocco */
+        /* Schermata 3: Espansione geometrica perfetta e rallentata */
         #screen-video {
-            display: none; /* Gestito via JS */
+            display: none; 
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000;
+             background: rgba(0, 0, 0, 0); 
             z-index: 200;
             
-            /* Stato iniziale: rimpicciolito e invisibile */
-            transform: scale(0.05);
+            /* STATO INIZIALE: Diventa un quadrato grande esattamente come 1 cella della griglia (1/3 dello schermo) */
+            transform: scaleX(0.3333) scaleY(calc((100vw / 3) / 100vh));
             opacity: 0;
             
-            /* Animazione fluida e morbida stile Apple */
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.3, 1), opacity 0.35s cubic-bezier(0.25, 1, 0.3, 1);
+            /* Rallentata a 0.8s con una curva Apple super fluida e decelerata sul finale */
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out;
         }
         
-        /* Classe attivata via JS per far esplodere il video a schermo intero */
+        /* STATO FINALE: Si espande a tutto schermo riprendendo le proporzioni originali */
         #screen-video.running {
-            transform: scale(1);
+            transform: scaleX(1) scaleY(1);
             opacity: 1;
         }
 
@@ -369,29 +369,45 @@
             }
         }, { passive: true }); // 'passive: true' garantisce che lo scorrimento di iOS rimanga fluidissimo
 
-
-        // Passiamo le coordinate X e Y del tocco alla funzione
         function avviaIlVideoMagico(touchX, touchY) {
-            screenGallery.style.display = 'none';
+            // 1. Calcoliamo il centro geometrico della cella cliccata per il fulcro
+            const targetThumb = document.getElementById('video-click-target');
+            const rect = targetThumb.getBoundingClientRect();
+            const centroQuadratoX = rect.left + (rect.width / 2);
+            const centroQuadratoY = rect.top + (rect.height / 2);
             
-            // Imposta il fulcro dell'animazione esattamente nel punto in cui è avvenuto il tocco
-            screenVideo.style.transformOrigin = `${touchX}px ${touchY}px`;
+            screenVideo.style.transformOrigin = `${centroQuadratoX}px ${centroQuadratoY}px`;
             
-            // Mostra la schermata e avvia l'allargamento fluido nel frame successivo
-            screenVideo.style.display = 'block';
-            requestAnimationFrame(() => {
-                screenVideo.classList.add('running');
-            });
-            
+            // 2. Prepariamo il video caricando il file
             video.setAttribute('playsinline', 'true');
             video.setAttribute('webkit-playsinline', 'true');
             video.src = "video.mp4";
             video.load();
 
+            // 3. Non appena i metadati sono pronti, prepariamo le dimensioni del canvas
             video.addEventListener('loadedmetadata', function() {
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
+                
+                // Disegna immediatamente il primo fotogramma statico sul canvas prima di muoverlo
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // Nascondiamo la vecchia galleria sullo sfondo
+                screenGallery.style.display = 'none';
+                
+                // Rendiamo visibile la Schermata 3 che ora contiene già il video pronto dentro il canvas
+                screenVideo.style.display = 'block';
+                
+                // Al frame successivo facciamo partire l'espansione fluida e lenta dal quadrato
+                requestAnimationFrame(() => {
+                    screenVideo.classList.add('running');
+                });
             }, { once: true });
+
+            // 4. Gestione del ciclo di riproduzione continuo
+            video.addEventListener('play', function() {
+                renderLoop();
+            });
 
             let playPromise = video.play();
             if (playPromise !== undefined) {
@@ -403,6 +419,8 @@
                 });
             }
         }
+
+
 
         // --- GESTIONE SCHERMATA 3: CANVAS E SOVRASCRITTURA DEL TESTO ---
         function renderLoop() {
