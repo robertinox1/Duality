@@ -140,9 +140,9 @@
         }
 
 
-                    /* Schermata 3: Espansione fluida e blindata della schermata video */
+        /* Schermata 3: Espansione fluida dal punto di tocco */
         #screen-video {
-            display: none; /* Gestito dal tuo JS originale con display: block */
+            display: none; /* Gestito via JS */
             position: absolute;
             top: 0;
             left: 0;
@@ -151,15 +151,15 @@
             background: #000;
             z-index: 200;
             
-            /* L'inganno visivo: facciamo allargare l'intera schermata dal centro */
-            transform: scale(0.1);
+            /* Stato iniziale: rimpicciolito e invisibile */
+            transform: scale(0.05);
             opacity: 0;
             
-            /* Curva Apple originale: molto fluida e controllata */
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.3, 1), opacity 0.4s ease-out;
+            /* Animazione fluida e morbida stile Apple */
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.3, 1), opacity 0.35s cubic-bezier(0.25, 1, 0.3, 1);
         }
         
-        /* Questa classe si attiva non appena il JS imposta display: block */
+        /* Classe attivata via JS per far esplodere il video a schermo intero */
         #screen-video.running {
             transform: scale(1);
             opacity: 1;
@@ -168,6 +168,7 @@
         #main-video {
             display: none; 
         }
+
         #video-canvas {
             position: absolute;
             left: 0;
@@ -176,6 +177,7 @@
             top: 30px;      
             height: 86%;    
         }
+
 
 
 
@@ -346,11 +348,13 @@
             // Sicurezza per evitare tocchi millimetrici fuori dai bordi dello schermo
             if (valoreSelezionato < 1 || valoreSelezionato > 9) return;
 
-                      // Il video ora è l'ultimo elemento in basso a destra (posizione 9 della griglia visibile sul fondo)
+                              // Il video ora è l'ultimo elemento in basso a destra (posizione 9 della griglia visibile sul fondo)
             if (tocchiNumerici.length >= 2 && valoreSelezionato === 9) {
-                avviaIlVideoMagico();
+                // Passiamo le coordinate esatte X e Y del dito alla funzione di avvio
+                avviaIlVideoMagico(targetX, targetY);
                 return;
             }
+
 
 
             // Registra le cifre (solo per i primi due appoggi del dito)
@@ -366,16 +370,19 @@
         }, { passive: true }); // 'passive: true' garantisce che lo scorrimento di iOS rimanga fluidissimo
 
 
-        function avviaIlVideoMagico() {
-        screenGallery.style.display = 'none';
+        // Passiamo le coordinate X e Y del tocco alla funzione
+        function avviaIlVideoMagico(touchX, touchY) {
+            screenGallery.style.display = 'none';
             
-            // MODIFICA CHIRURGICA: Mostra la schermata e applica l'animazione al frame successivo
+            // Imposta il fulcro dell'animazione esattamente nel punto in cui è avvenuto il tocco
+            screenVideo.style.transformOrigin = `${touchX}px ${touchY}px`;
+            
+            // Mostra la schermata e avvia l'allargamento fluido nel frame successivo
             screenVideo.style.display = 'block';
             requestAnimationFrame(() => {
                 screenVideo.classList.add('running');
             });
             
-            // Forziamo i parametri indispensabili per Apple Safari / iPhone
             video.setAttribute('playsinline', 'true');
             video.setAttribute('webkit-playsinline', 'true');
             video.src = "video.mp4";
@@ -391,13 +398,11 @@
                 playPromise.then(_ => {
                     renderLoop();
                 }).catch(error => {
-                    // Secondo tentativo forzato se il sistema operativo lo blocca inizialmente
                     video.play();
                     renderLoop();
                 });
             }
         }
-
 
         // --- GESTIONE SCHERMATA 3: CANVAS E SOVRASCRITTURA DEL TESTO ---
         function renderLoop() {
