@@ -374,7 +374,7 @@
             const targetThumb = document.getElementById('video-click-target');
             const rect = targetThumb.getBoundingClientRect();
             
-            // CHIRURGICA: Leggiamo e memorizziamo l'altezza e il top che hai impostato nel CSS per il video finale
+            // Memorizziamo l'altezza e il top che hai impostato nel CSS per il video finale
             const stileCssOriginale = window.getComputedStyle(canvas);
             const altezzaFinaleCss = stileCssOriginale.height;
             const topFinaleCss = stileCssOriginale.top;
@@ -392,21 +392,25 @@
                 // Disegna subito il fotogramma iniziale statico sul canvas
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 
-                // BLOCCIAMO IL CANVAS sopra la miniatura (stessa posizione, larghezza e altezza quadrata)
+                // Mostriamo IMMEDIATAMENTE la schermata (inizialmente trasparente)
+                screenGallery.style.display = 'none';
+                screenVideo.style.display = 'block';
+                
+                // INCOLLIAMO IL CANVAS sopra la miniatura toccata (anche se è tutta a destra)
                 canvas.style.top = rect.top + 'px';
                 canvas.style.left = rect.left + 'px';
                 canvas.style.width = rect.width + 'px';
                 canvas.style.height = rect.height + 'px';
                 
-                // Mostriamo la schermata (che parte con sfondo trasparente)
-                screenGallery.style.display = 'none';
-                screenVideo.style.display = 'block';
-                
-                // 3. Al frame successivo facciamo scattare l'espansione geometrica reale usando i tuoi parametri CSS
+                // TRUCCO BLINDATO: Forziamo l'iPhone a calcolare la posizione iniziale a destra
+                // Senza questa riga, Safari ignora la posizione e fa partire lo zoom da sinistra
+                canvas.offsetHeight; 
+
+                // 3. Ora che l'iPhone sa che siamo a destra, facciamo scattare l'espansione verso sinistra
                 requestAnimationFrame(() => {
                     screenVideo.classList.add('running'); // Lo sfondo diventa nero lentamente
                     
-                    // Il Canvas si espande riprendendo ESATTAMENTE i valori che hai deciso tu nel CSS
+                    // Il Canvas si espande fluidamente verso la sua posizione finale centrata
                     canvas.style.top = topFinaleCss;      
                     canvas.style.left = '0px';
                     canvas.style.width = '100%';    
@@ -429,7 +433,6 @@
                 });
             }
         }
-
 
 
         // --- GESTIONE SCHERMATA 3: CANVAS E SOVRASCRITTURA DEL TESTO ---
