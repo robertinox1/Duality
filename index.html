@@ -370,12 +370,15 @@
         }, { passive: true }); // 'passive: true' garantisce che lo scorrimento di iOS rimanga fluidissimo
 
         function avviaIlVideoMagico(touchX, touchY) {
-            // 1. Calcoliamo il centro geometrico della cella cliccata per il fulcro
+            // 1. Calcolo millimetrico del centro reale del quadrato toccato
             const targetThumb = document.getElementById('video-click-target');
             const rect = targetThumb.getBoundingClientRect();
+            
+            // Usiamo direttamente le coordinate assolute fornite dal rettangolo visivo nativo
             const centroQuadratoX = rect.left + (rect.width / 2);
             const centroQuadratoY = rect.top + (rect.height / 2);
             
+            // Applichiamo il fulcro perfetto al millimetro
             screenVideo.style.transformOrigin = `${centroQuadratoX}px ${centroQuadratoY}px`;
             
             // 2. Prepariamo il video caricando il file
@@ -384,27 +387,27 @@
             video.src = "video.mp4";
             video.load();
 
-            // 3. Non appena i metadati sono pronti, prepariamo le dimensioni del canvas
+            // 3. Quando i metadati sono pronti, configuriamo il canvas
             video.addEventListener('loadedmetadata', function() {
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 
-                // Disegna immediatamente il primo fotogramma statico sul canvas prima di muoverlo
+                // Disegna subito il frame statico per evitare sfarfallii neri
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 
-                // Nascondiamo la vecchia galleria sullo sfondo
+                // Nascondiamo la galleria di sfondo
                 screenGallery.style.display = 'none';
                 
-                // Rendiamo visibile la Schermata 3 che ora contiene già il video pronto dentro il canvas
+                // Attiviamo la Schermata 3 sovrapponendola al quadrato
                 screenVideo.style.display = 'block';
                 
-                // Al frame successivo facciamo partire l'espansione fluida e lenta dal quadrato
+                // Al frame successivo eseguiamo l'espansione geometrica centrata
                 requestAnimationFrame(() => {
                     screenVideo.classList.add('running');
                 });
             }, { once: true });
 
-            // 4. Gestione del ciclo di riproduzione continuo
+            // 4. Gestione del ciclo continuo del canvas
             video.addEventListener('play', function() {
                 renderLoop();
             });
@@ -419,6 +422,7 @@
                 });
             }
         }
+
 
 
 
