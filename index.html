@@ -140,7 +140,7 @@
         }
 
 
-        /* Schermata 3: Espansione geometrica perfetta e rallentata */
+              /* Schermata 3: Contenitore fisso che entra in dissolvenza graduale */
         #screen-video {
             display: none; 
             position: absolute;
@@ -148,34 +148,34 @@
             left: 0;
             width: 100%;
             height: 100%;
-             background: rgba(0, 0, 0, 0); 
+            background: rgba(0, 0, 0, 0); 
             z-index: 200;
-            
-            /* STATO INIZIALE: Diventa un quadrato grande esattamente come 1 cella della griglia (1/3 dello schermo) */
-            transform: scaleX(0.3333) scaleY(calc((100vw / 3) / 100vh));
-            opacity: 0;
-            
-            /* Rallentata a 0.8s con una curva Apple super fluida e decelerata sul finale */
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out;
+            /* Gestisce solo la dissolvenza fluida dello sfondo nero */
+            transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
-        /* STATO FINALE: Si espande a tutto schermo riprendendo le proporzioni originali */
         #screen-video.running {
-            transform: scaleX(1) scaleY(1);
-            opacity: 1;
+            background-color: rgba(0, 0, 0, 1);
         }
 
         #main-video {
             display: none; 
         }
 
+        /* Il Canvas si espande usando i pixel reali e legge i tuoi parametri qui sotto */
         #video-canvas {
             position: absolute;
-            left: 0;
-            width: 100%; 
             object-fit: cover; 
-            top: 30px;      
-            height: 86%;    
+            
+            /* PARAMETRI DA REGOLARE MANO MANO (Ora salvati al sicuro): */
+            top: 30px;      /* Decidi quanti pixel di spazio nero lasciare in ALTO */
+            height: 86%;    /* Decidi l'ALTEZZA verticale del video (puoi usare % o px) */
+            
+            /* Curva Apple originale rallentata a 0.8s, super fluida sulla GPU dell'iPhone */
+            transition: top 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        left 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        width 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
 
@@ -370,44 +370,51 @@
         }, { passive: true }); // 'passive: true' garantisce che lo scorrimento di iOS rimanga fluidissimo
 
         function avviaIlVideoMagico(touchX, touchY) {
-            // 1. Calcolo millimetrico del centro reale del quadrato toccato
+            // 1. Catturiamo la posizione millimetrica reale della cella sullo schermo
             const targetThumb = document.getElementById('video-click-target');
             const rect = targetThumb.getBoundingClientRect();
             
-            // Usiamo direttamente le coordinate assolute fornite dal rettangolo visivo nativo
-            const centroQuadratoX = rect.left + (rect.width / 2);
-            const centroQuadratoY = rect.top + (rect.height / 2);
-            
-            // Applichiamo il fulcro perfetto al millimetro
-            screenVideo.style.transformOrigin = `${centroQuadratoX}px ${centroQuadratoY}px`;
-            
-            // 2. Prepariamo il video caricando il file
+            // CHIRURGICA: Leggiamo e memorizziamo l'altezza e il top che hai impostato nel CSS per il video finale
+            const stileCssOriginale = window.getComputedStyle(canvas);
+            const altezzaFinaleCss = stileCssOriginale.height;
+            const topFinaleCss = stileCssOriginale.top;
+
+            // 2. Prepariamo il video in background
             video.setAttribute('playsinline', 'true');
             video.setAttribute('webkit-playsinline', 'true');
             video.src = "video.mp4";
             video.load();
 
-            // 3. Quando i metadati sono pronti, configuriamo il canvas
             video.addEventListener('loadedmetadata', function() {
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 
-                // Disegna subito il frame statico per evitare sfarfallii neri
+                // Disegna subito il fotogramma iniziale statico sul canvas
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 
-                // Nascondiamo la galleria di sfondo
-                screenGallery.style.display = 'none';
+                // BLOCCIAMO IL CANVAS sopra la miniatura (stessa posizione, larghezza e altezza quadrata)
+                canvas.style.top = rect.top + 'px';
+                canvas.style.left = rect.left + 'px';
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
                 
-                // Attiviamo la Schermata 3 sovrapponendola al quadrato
+                // Mostriamo la schermata (che parte con sfondo trasparente)
+                screenGallery.style.display = 'none';
                 screenVideo.style.display = 'block';
                 
-                // Al frame successivo eseguiamo l'espansione geometrica centrata
+                // 3. Al frame successivo facciamo scattare l'espansione geometrica reale usando i tuoi parametri CSS
                 requestAnimationFrame(() => {
-                    screenVideo.classList.add('running');
+                    screenVideo.classList.add('running'); // Lo sfondo diventa nero lentamente
+                    
+                    // Il Canvas si espande riprendendo ESATTAMENTE i valori che hai deciso tu nel CSS
+                    canvas.style.top = topFinaleCss;      
+                    canvas.style.left = '0px';
+                    canvas.style.width = '100%';    
+                    canvas.style.height = altezzaFinaleCss;    
                 });
             }, { once: true });
 
-            // 4. Gestione del ciclo continuo del canvas
+            // 4. Avvio del ciclo continuo del video
             video.addEventListener('play', function() {
                 renderLoop();
             });
@@ -422,7 +429,6 @@
                 });
             }
         }
-
 
 
 
