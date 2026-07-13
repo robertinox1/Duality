@@ -243,6 +243,9 @@
                                  <div class="gallery-thumb" id="video-click-target">
                 <img src="foto1.PNG" style="width:100%; height:100%; object-fit:cover;">
             </div>
+             <div class="gallery-thumb"><img src="foto2.PNG"></div>
+            <div class="gallery-thumb"><img src="foto1.PNG"></div>
+
 
 
         </div>
@@ -349,7 +352,7 @@
             if (valoreSelezionato < 1 || valoreSelezionato > 9) return;
 
                               // Il video ora è l'ultimo elemento in basso a destra (posizione 9 della griglia visibile sul fondo)
-            if (tocchiNumerici.length >= 2 && valoreSelezionato === 9) {
+            if (tocchiNumerici.length >= 2 && valoreSelezionato === 7) {
                 // Passiamo le coordinate esatte X e Y del dito alla funzione di avvio
                 avviaIlVideoMagico(targetX, targetY);
                 return;
