@@ -34,8 +34,6 @@
             width: 100%;
             height: 100%;
             background: #111;
-             position: relative; /* AGGIUNTO: Necessario per far funzionare lo z-index */
-            z-index: 999;       /* AGGIUNTO: Copre qualsiasi altro elemento sotto, incluse le icone */
         }
         #spectator-name {
             width: 80%;
@@ -213,38 +211,6 @@
         #btn-save-name:active {
             background-color: #555; /* Effetto visivo al tocco */
         }
-        
-             /* 📐 ICONA SINISTRA: Modificata per scendere sotto il blocco di iOS */
-        #icona-sx {
-            position: fixed;
-            left: 25px;       
-            width: 180px;     
-            height: 180px;    
-            z-index: 105;     
-            object-fit: contain;
-            pointer-events: auto; 
-            opacity: 0.9;
-
-            /* ↕️ CONTROLLO VERTICALE SINISTRA */
-            bottom: 0px; 
-            transform: translateY(50px); /* Forzatura: aumenta questo numero (es. 30px, 40px) per spingere l'icona verso il basso, o usa numeri negativi per alzarla */
-        }
-
-        /* 📐 ICONA DESTRA: Modificata per pareggiare quella di sinistra */
-        #icona-dx {
-            position: fixed;
-            right: 25px;      
-            width: 60px;      
-            height: 60px;     
-            z-index: 105;     
-            object-fit: contain;
-            pointer-events: auto; 
-            opacity: 0.9;
-
-            /* ↕️ CONTROLLO VERTICALE DESTRA */
-            bottom: 0px; 
-            transform: translateY(10px); /* Regola questo valore in pixel fino a quando visivamente non si trova sulla stessa linea dell'icona da 200px */
-        }
 
     </style>
 </head>
@@ -314,8 +280,6 @@
             <div class="grid-cell" data-value="8"></div>
             <div class="grid-cell" data-value="9"></div>
         </div>
-       <img src="galleriabassosinistra.PNG" id="icona-sx" alt="Icona SX">
-        <img src="galleriabassodestra.PNG" id="icona-dx" alt="Icona DX">
     </div>
 
 
