@@ -67,6 +67,7 @@
             grid-auto-rows: calc(100vw / 3); /* Crea quadrati perfetti */
             gap: 1px;
            box-sizing: border-box;
+            padding-bottom: 50px;
         }
         /* MODIFICA CHIRURGICA: Intestazione fissa trasparente senza alcuna sfumatura */
         .ios-gallery-header {
@@ -210,78 +211,6 @@
         #btn-save-name:active {
             background-color: #555; /* Effetto visivo al tocco */
         }
-                /* MODIFICA CHIRURGICA: Crea una riga orizzontale per Titolo + Icone */
-        .ios-gallery-header-top-row {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Contenitore per le due icone di destra affiancate */
-        .ios-gallery-header-icons {
-            display: flex;
-            gap: 10px; /* Spazio orizzontale tra le due icone */
-            pointer-events: none; /* Le rende cliccabili se necessario */
-        }
-
-        /* PARAMETRI ICONA IN ALTO 1 (Più a sinistra delle due) */
-        .icon-top-1 {
-            width: 45px;
-            height: auto;
-             opacity: 0.75;
-        }
-
-        /* PARAMETRI ICONA IN ALTO 2 (All'estremo angolo destro) */
-        .icon-top-2 {
-            width: 105px;
-            height: auto;
-             opacity: 0.75;
-        }
-                 /* Di base il footer è invisibile e non occupa spazio */
-        .ios-gallery-footer {
-            position: fixed;
-            bottom: -10px;
-            left: 0;
-            width: 100%;
-            height: auto;
-            padding: 0 20px 0 20px;
-            box-sizing: border-box;
-            display: none; /* Nasconde le icone all'avvio nello screen input */
-            justify-content: space-between;
-            align-items: center;
-            z-index: 101; 
-            pointer-events: none;
-            background: transparent;
-        }
-
-        /* TRUCCO 100% CSS: Quando lo screen gallery si attiva e prende opacità, mostra il footer */
-        #screen-gallery[style*="opacity: 1"] + .ios-gallery-footer,
-        #screen-gallery[style*="opacity: 1"] ~ .ios-gallery-footer {
-            display: flex !important;
-        }
-
-
-  .icon-left {
-            width: 170px; 
-            height: auto;
-            display: block; /* Impedisce micro-tagli sui bordi inferiori delle immagini */
-            transform: translateZ(0); /* Isola l'immagine su un livello hardware separato */
-            -webkit-transform: translateZ(0); /* Supporto specifico per Safari su iPhone */
-            pointer-events: auto;
-        }
-
-        /* PARAMETRI ICONA DESTRA */
-        .icon-right {
-            width: 55px; 
-            height: auto;
-            display: block;
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
-            pointer-events: auto;
-        }
-
-
 
     </style>
 </head>
@@ -298,18 +227,11 @@
              <!-- S2: GALLERIA IPHONE A GRIGLIA -->
     <div id="screen-gallery">
         
-               <!-- MODIFICA CHIRURGICA: Intestazione con icone in alto a destra affiancate -->
+        <!-- MODIFICA CHIRURGICA: Intestazione Libreria fissa in alto -->
         <div class="ios-gallery-header">
-            <div class="ios-gallery-header-top-row">
-                <h1 class="ios-gallery-title">Libreria</h1>
-                <div class="ios-gallery-header-icons">
-                    <img src="alto1.PNG" class="icon-top-1" alt="Icona Alto 1">
-                    <img src="alto2.PNG" class="icon-top-2" alt="Icona Alto 2">
-                </div>
-            </div>
+            <h1 class="ios-gallery-title">Libreria</h1>
             <span class="ios-gallery-subtitle">1541 elementi</span>
         </div>
-
 
         <div id="gallery-scroll-container">
 
@@ -340,9 +262,6 @@
             </div>
              <div class="gallery-thumb"><img src="foto2.PNG"></div>
             <div class="gallery-thumb"><img src="foto1.PNG"></div>
-            <div class="gallery-thumb"><img src="fondo.PNG"></div>
-            <div class="gallery-thumb"><img src="fondo.PNG"></div>
-            <div class="gallery-thumb"><img src="fondo.PNG"></div>
 
 
 
@@ -368,11 +287,6 @@
     <div id="screen-video">
         <video id="main-video" src="video.mp4" playsinline></video>
         <canvas id="video-canvas"></canvas>
-    </div>
-     <!-- MODIFICA CHIRURGICA: Footer ora è autonomo e fuori da tutto -->
-    <div id="app-global-footer" class="ios-gallery-footer">
-        <img src="galleriabassosinistra.PNG" class="icon-left" alt="Icona Sinistra">
-        <img src="galleriabassodestra.PNG" class="icon-right" alt="Icona Destra">
     </div>
     <script>
         // --- CONFIGURAZIONE DEL TRUCCO ---
