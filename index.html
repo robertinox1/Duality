@@ -263,15 +263,22 @@
         }
 
 
-        .icon-left {
-            width: 160px; /* Regola i pixel della larghezza come vuoi */
+  .icon-left {
+            width: 170px; 
             height: auto;
+            display: block; /* Impedisce micro-tagli sui bordi inferiori delle immagini */
+            transform: translateZ(0); /* Isola l'immagine su un livello hardware separato */
+            -webkit-transform: translateZ(0); /* Supporto specifico per Safari su iPhone */
             pointer-events: auto;
         }
 
+        /* PARAMETRI ICONA DESTRA */
         .icon-right {
-            width: 55px; /* Regola i pixel della larghezza come vuoi */
+            width: 55px; 
             height: auto;
+            display: block;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
             pointer-events: auto;
         }
 
