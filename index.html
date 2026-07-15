@@ -214,37 +214,37 @@
             background-color: #555; /* Effetto visivo al tocco */
         }
         
-         /* 📐 ICONA SINISTRA: Totalmente indipendente */
+             /* 📐 ICONA SINISTRA: Modificata per scendere sotto il blocco di iOS */
         #icona-sx {
             position: fixed;
-            left: 25px;       /* Distanza dal bordo sinistro dello schermo */
-            width: 180px;     /* Larghezza dell'icona sinistra */
-            height: 180px;    /* Altezza dell'icona sinistra */
+            left: 25px;       
+            width: 180px;     
+            height: 180px;    
             z-index: 105;     
             object-fit: contain;
             pointer-events: auto; 
             opacity: 0.9;
 
-            /* ↕️ ALTEZZA FONDO SINISTRA: Cambia questo numero per farla scendere. 
-               Se metti 0px tocca il fondo. Puoi usare anche numeri negativi (es: -20px) */
-            bottom: 10px; 
+            /* ↕️ CONTROLLO VERTICALE SINISTRA */
+            bottom: 0px; 
+            transform: translateY(20px); /* Forzatura: aumenta questo numero (es. 30px, 40px) per spingere l'icona verso il basso, o usa numeri negativi per alzarla */
         }
 
-        /* 📐 ICONA DESTRA: Totalmente indipendente */
+        /* 📐 ICONA DESTRA: Modificata per pareggiare quella di sinistra */
         #icona-dx {
             position: fixed;
-            right: 25px;      /* Distanza dal bordo destro dello schermo */
-            width: 60px;      /* Larghezza dell'icona destra */
-            height: 60px;     /* Altezza dell'icona destra */
+            right: 60px;      
+            width: 60px;      
+            height: 50px;     
             z-index: 105;     
             object-fit: contain;
             pointer-events: auto; 
             opacity: 0.9;
 
-            /* ↕️ ALTEZZA FONDO DESTRA: Regola questa altezza per allinearla a quella di sinistra */
-            bottom: 10px; 
+            /* ↕️ CONTROLLO VERTICALE DESTRA */
+            bottom: 0px; 
+            transform: translateY(0px); /* Regola questo valore in pixel fino a quando visivamente non si trova sulla stessa linea dell'icona da 200px */
         }
-
 
     </style>
 </head>
