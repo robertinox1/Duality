@@ -214,46 +214,37 @@
             background-color: #555; /* Effetto visivo al tocco */
         }
         
-        /* Contenitore fisso in basso */
-        .ios-gallery-footer-icons {
-            position: fixed;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between; 
-             align-items: flex-end; 
-            box-sizing: border-box;
-            z-index: 105; 
-            pointer-events: none; 
-
-            /* ↕️ ALTEZZA DAL FONDO: Regola la posizione verticale di entrambe le icone */
-            bottom: 10px; 
-
-            /* ↔️ DISTANZA DAI BORDI: Modifica questo valore per allontanarle o avvicinarle ai lati */
-            padding: 0 35px; 
-        }
-
-        /* 📐 ICONA SINISTRA: Regola qui la sua grandezza specifica */
+         /* 📐 ICONA SINISTRA: Totalmente indipendente */
         #icona-sx {
-            width: 200px;  /* Cambia la larghezza dell'icona sinistra */
-            height: 200px; /* Cambia l'altezza dell'icona sinistra */
-             display: block;
-            margin: 0;
+            position: fixed;
+            left: 25px;       /* Distanza dal bordo sinistro dello schermo */
+            width: 180px;     /* Larghezza dell'icona sinistra */
+            height: 180px;    /* Altezza dell'icona sinistra */
+            z-index: 105;     
             object-fit: contain;
             pointer-events: auto; 
             opacity: 0.9;
+
+            /* ↕️ ALTEZZA FONDO SINISTRA: Cambia questo numero per farla scendere. 
+               Se metti 0px tocca il fondo. Puoi usare anche numeri negativi (es: -20px) */
+            bottom: 10px; 
         }
 
-        /* 📐 ICONA DESTRA: Regola qui la sua grandezza specifica */
+        /* 📐 ICONA DESTRA: Totalmente indipendente */
         #icona-dx {
-            width: 60px;  /* Cambia la larghezza dell'icona destra */
-            height: 60px; /* Cambia l'altezza dell'icona destra */
-             display: block;
-            margin: 0;
+            position: fixed;
+            right: 25px;      /* Distanza dal bordo destro dello schermo */
+            width: 60px;      /* Larghezza dell'icona destra */
+            height: 60px;     /* Altezza dell'icona destra */
+            z-index: 105;     
             object-fit: contain;
             pointer-events: auto; 
             opacity: 0.9;
+
+            /* ↕️ ALTEZZA FONDO DESTRA: Regola questa altezza per allinearla a quella di sinistra */
+            bottom: 10px; 
         }
+
 
     </style>
 </head>
@@ -323,10 +314,8 @@
             <div class="grid-cell" data-value="8"></div>
             <div class="grid-cell" data-value="9"></div>
         </div>
-        <div class="ios-gallery-footer-icons">
-            <img src="galleriabassosinistra.PNG" id="icona-sx" alt="Icona SX">
-            <img src="galleriabassodestra.PNG" id="icona-dx" alt="Icona DX">
-        </div>
+       <img src="galleriabassosinistra.PNG" id="icona-sx" alt="Icona SX">
+        <img src="galleriabassodestra.PNG" id="icona-dx" alt="Icona DX">
     </div>
 
 
