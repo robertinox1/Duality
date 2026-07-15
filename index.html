@@ -211,6 +211,29 @@
         #btn-save-name:active {
             background-color: #555; /* Effetto visivo al tocco */
         }
+                /* Contenitore fisso in fondo alla galleria per le icone */
+        .ios-gallery-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px; /* Spazio in basso per le icone */
+            padding: 0 35px padding-bottom: calc(env(safe-area-inset-bottom) + 10px); /* Evita il taglio su iPhone con notch */
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 99; /* Sopra le foto, stesso livello dell'header */
+            pointer-events: none; /* Non blocca i tocchi sulla griglia invisibile */
+            background: transparent;
+        }
+
+        .ios-gallery-footer img {
+            width: 30px; /* Regola la larghezza dell'icona se necessario */
+            height: auto;
+            pointer-events: auto; /* Rende le icone eventualmente cliccabili */
+        }
+
 
     </style>
 </head>
@@ -266,6 +289,10 @@
 
 
         </div>
+        </div>
+    <div class="ios-gallery-footer">
+            <img src="sinistra.png" alt="Icona Sinistra">
+            <img src="destra.png" alt="Icona Destra">
         </div>
 
         <!-- Griglia invisibile fissa 1-9 (Senza lo 0 per ora) -->
