@@ -213,21 +213,25 @@
         #btn-save-name:active {
             background-color: #555; /* Effetto visivo al tocco */
         }
-               /* MODIFICA DEFINTIVA: Icone fisse che compaiono solo insieme alla galleria */
+                  /* Sblocco totale: forza le icone a scendere nell'estrema fascia nera */
         .ios-gallery-footer {
             position: fixed;
-            bottom: 0;
+            bottom: 0px; /* Regola questo valore (anche negativo, es. -5px) per spingerle giù a piacimento */
             left: 0;
             width: 100%;
-            height: 60px;
-             padding: 0 15px env(safe-area-inset-bottom) 15px;
+            height: 50px; 
+            
+            /* Eliminata la safe-area di iOS e ridotto il margine laterale a soli 12px per attaccarle ai bordi */
+            padding: 0 12px 0 12px; 
+            
             box-sizing: border-box;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 101; /* Sopra le foto che scorrono */
+            z-index: 101; 
             pointer-events: none;
             background: transparent;
+        }
 
             /* TRUCCO 100% CSS: Il footer eredita l'opacità dallo schermo in cui si trova.
                Finché la galleria è a opacity: 0, le icone sono invisibili e non toccabili.
