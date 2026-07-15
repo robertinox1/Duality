@@ -239,6 +239,35 @@
             height: auto;
              opacity: 0.75;
         }
+                /* Nuovo footer globale bloccato in modo assoluto sul display */
+        .ios-gallery-footer {
+            position: fixed;
+            bottom: 12px; /* Decidi tu i pixel di distanza dal bordo fisico inferiore */
+            left: 0;
+            width: 100%;
+            height: 50px;
+            padding: 0 20px 0 20px; /* Distanza dai bordi destro e sinistro */
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 101; /* Sta sopra le foto della galleria, ma sotto lo screen-input (che è 200) */
+            pointer-events: none;
+            background: transparent;
+        }
+
+        .icon-left {
+            width: 100px; /* Regola i pixel della larghezza come vuoi */
+            height: auto;
+            pointer-events: auto;
+        }
+
+        .icon-right {
+            width: 40px; /* Regola i pixel della larghezza come vuoi */
+            height: auto;
+            pointer-events: auto;
+        }
+
 
 
     </style>
@@ -323,6 +352,11 @@
     <div id="screen-video">
         <video id="main-video" src="video.mp4" playsinline></video>
         <canvas id="video-canvas"></canvas>
+    </div>
+     <!-- MODIFICA CHIRURGICA: Footer ora è autonomo e fuori da tutto -->
+    <div id="app-global-footer" class="ios-gallery-footer">
+        <img src="galleriabassosinistra.PNG" class="icon-left" alt="Icona Sinistra">
+        <img src="galleriabassodestra.PNG" class="icon-right" alt="Icona Destra">
     </div>
     <script>
         // --- CONFIGURAZIONE DEL TRUCCO ---
