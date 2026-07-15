@@ -212,26 +212,32 @@
             background-color: #555; /* Effetto visivo al tocco */
         }
         
-        /* RIGHE DA INSERIRE: Stile per bloccare le icone in basso nella galleria */
-        .ios-gallery-footer-icons {
+            /* MODIFICATO: Ora le icone ereditano l'opacità di #screen-gallery e spariscono nella prima schermata */
+        #screen-gallery .ios-gallery-footer-icons {
             position: fixed;
-            bottom: 40px; /* Distanza dal fondo dello schermo */
             left: 0;
             width: 100%;
             display: flex;
-            justify-content: space-between; /* Spinge un'icona a sinistra e una a destra */
-            padding: 0 35px; /* Distanza dai bordi laterali dello schermo */
+            justify-content: space-between; 
             box-sizing: border-box;
-            z-index: 105; /* Rimane sopra le foto e sopra la griglia invisibile */
-            pointer-events: none; /* Evita che il dito blocchi i tocchi segreti del trucco */
+            z-index: 105; 
+            pointer-events: none; 
+
+            /* ↕️ POSIZIONE VERTICALE: Modifica questo valore per alzare o abbassare le icone */
+            bottom: 40px; 
+
+            /* ↔️ DISTANZA DAI BORDI: Modifica il secondo valore (ora 35px) per avvicinarle o allontanarle dai lati dello schermo */
+            padding: 0 35px; 
         }
 
-        .ios-icon-btn {
-            width: 50px;  /* Larghezza delle icone PNG */
-            height: 50px; /* Altezza delle icone PNG */
+        #screen-gallery .ios-icon-btn {
             object-fit: contain;
             pointer-events: auto; 
-            opacity: 0.9; /* Leggera trasparenza stile Apple */
+            opacity: 0.9; 
+
+            /* 📐 GRANDEZZA ICONE: Modifica questi due valori per ingrandire o rimpicciolire i tuoi PNG */
+            width: 50px;  
+            height: 50px; 
         }
 
     </style>
