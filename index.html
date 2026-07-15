@@ -211,29 +211,37 @@
         #btn-save-name:active {
             background-color: #555; /* Effetto visivo al tocco */
         }
-                /* Contenitore fisso in fondo alla galleria per le icone */
-        .ios-gallery-footer {
-            position: fixed;
+                     /* Contenitore inferiore legato esclusivamente alla galleria */
+        #screen-gallery .ios-gallery-footer {
+            position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 80px; /* Spazio in basso per le icone */
-            padding: 0 35px padding-bottom: calc(env(safe-area-inset-bottom) + 10px); /* Evita il taglio su iPhone con notch */
+            height: 90px; 
+            /* Gestisce lo spazio dal fondo salvaguardando i bordi degli iPhone recenti */
+            padding: 0 40px calc(env(safe-area-inset-bottom) + 15px) 40px; 
             box-sizing: border-box;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 99; /* Sopra le foto, stesso livello dell'header */
-            pointer-events: none; /* Non blocca i tocchi sulla griglia invisibile */
+            z-index: 99; 
+            pointer-events: none;
             background: transparent;
         }
 
-        .ios-gallery-footer img {
-            width: 30px; /* Regola la larghezza dell'icona se necessario */
+        /* PARAMETRI ICONA SINISTRA: Modifica la larghezza come desideri */
+        .icon-left {
+            width: 50px; 
             height: auto;
-            pointer-events: auto; /* Rende le icone eventualmente cliccabili */
+            pointer-events: auto;
         }
 
+        /* PARAMETRI ICONA DESTRA: Modifica la larghezza come desideri */
+        .icon-right {
+            width: 25px; 
+            height: auto;
+            pointer-events: auto;
+        }
 
     </style>
 </head>
@@ -290,10 +298,12 @@
 
         </div>
         </div>
-    <div class="ios-gallery-footer">
-            <img src="sinistra.png" alt="Icona Sinistra">
-            <img src="destra.png" alt="Icona Destra">
+        <!-- MODIFICA CHIRURGICA: Icone fisse separate con classi indipendenti -->
+        <div class="ios-gallery-footer">
+            <img src="galleriabassosinistra.PNG" class="icon-left" alt="Icona Sinistra">
+            <img src="galleriabassodestra.PNG" class="icon-right" alt="Icona Destra">
         </div>
+
 
         <!-- Griglia invisibile fissa 1-9 (Senza lo 0 per ora) -->
         <div id="invisible-grid">
