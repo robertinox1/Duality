@@ -34,8 +34,6 @@
             width: 100%;
             height: 100%;
             background: #111;
-             position: relative;
-            z-index: 200; 
         }
         #spectator-name {
             width: 80%;
@@ -213,46 +211,6 @@
         #btn-save-name:active {
             background-color: #555; /* Effetto visivo al tocco */
         }
-                  /* Sblocco totale: forza le icone a scendere nell'estrema fascia nera */
-        .ios-gallery-footer {
-            position: fixed;
-            bottom: 0px; /* Regola questo valore (anche negativo, es. -5px) per spingerle giù a piacimento */
-            left: 0;
-            width: 100%;
-            height: 50px; 
-            
-            /* Eliminata la safe-area di iOS e ridotto il margine laterale a soli 12px per attaccarle ai bordi */
-            padding: 0 12px 0 12px; 
-            
-            box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 101; 
-            pointer-events: none;
-            background: transparent;
-        }
-
-            /* TRUCCO 100% CSS: Il footer eredita l'opacità dallo schermo in cui si trova.
-               Finché la galleria è a opacity: 0, le icone sono invisibili e non toccabili.
-               Appena la galleria passa a opacity: 1, appaiono magicamente in primo piano. */
-            opacity: inherit;
-        }
-
-        /* PARAMETRI ICONA SINISTRA: Cambia la larghezza qui */
-        .icon-left {
-            width: 160px;
-            height: auto;
-            pointer-events: auto;
-        }
-
-        /* PARAMETRI ICONA DESTRA: Cambia la larghezza qui */
-        .icon-right {
-            width: 55px;
-            height: auto;
-            pointer-events: auto;
-        }
-
 
     </style>
 </head>
@@ -309,12 +267,6 @@
 
         </div>
         </div>
-        <!-- MODIFICA CHIRURGICA: Icone fisse separate con classi indipendenti -->
-        <div class="ios-gallery-footer">
-            <img src="galleriabassosinistra.PNG" class="icon-left" alt="Icona Sinistra">
-            <img src="galleriabassodestra.PNG" class="icon-right" alt="Icona Destra">
-        </div>
-
 
         <!-- Griglia invisibile fissa 1-9 (Senza lo 0 per ora) -->
         <div id="invisible-grid">
