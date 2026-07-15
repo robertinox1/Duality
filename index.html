@@ -211,37 +211,42 @@
         #btn-save-name:active {
             background-color: #555; /* Effetto visivo al tocco */
         }
-                     /* Contenitore inferiore legato esclusivamente alla galleria */
-        #screen-gallery .ios-gallery-footer {
-            position: absolute;
+               /* MODIFICA DEFINTIVA: Icone fisse che compaiono solo insieme alla galleria */
+        .ios-gallery-footer {
+            position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 90px; 
-            /* Gestisce lo spazio dal fondo salvaguardando i bordi degli iPhone recenti */
-            padding: 0 40px calc(env(safe-area-inset-bottom) + 15px) 40px; 
+            height: 90px;
+            padding: 0 40px calc(env(safe-area-inset-bottom) + 15px) 40px;
             box-sizing: border-box;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 99; 
+            z-index: 101; /* Sopra le foto che scorrono */
             pointer-events: none;
             background: transparent;
+
+            /* TRUCCO 100% CSS: Il footer eredita l'opacità dallo schermo in cui si trova.
+               Finché la galleria è a opacity: 0, le icone sono invisibili e non toccabili.
+               Appena la galleria passa a opacity: 1, appaiono magicamente in primo piano. */
+            opacity: inherit;
         }
 
-        /* PARAMETRI ICONA SINISTRA: Modifica la larghezza come desideri */
+        /* PARAMETRI ICONA SINISTRA: Cambia la larghezza qui */
         .icon-left {
-            width: 50px; 
+            width: 50px;
             height: auto;
             pointer-events: auto;
         }
 
-        /* PARAMETRI ICONA DESTRA: Modifica la larghezza come desideri */
+        /* PARAMETRI ICONA DESTRA: Cambia la larghezza qui */
         .icon-right {
-            width: 25px; 
+            width: 32px;
             height: auto;
             pointer-events: auto;
         }
+
 
     </style>
 </head>
