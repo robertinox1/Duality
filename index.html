@@ -75,7 +75,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            padding: 0px 20px 0px 20px; /* Ridotto lo spazio sul fondo per stringere */
+            padding: 55px 20px 0px 20px; /* Ridotto lo spazio sul fondo per stringere */
             box-sizing: border-box;
             
             /* Sfondo completamente invisibile (nessuna sfocatura o colore) */
@@ -93,7 +93,7 @@
         /* Stile dei testi interni bianchi e attaccati */
         .ios-gallery-header h1 {
             color: #ffffff; /* Scritta bianca pulita */
-            font-size: 28px;
+            font-size: 34px;
             font-weight: 700;
             margin: 0;
             letter-spacing: -0.5px;
@@ -101,7 +101,7 @@
         }
         .ios-gallery-header span {
             color: #ffffff; /* Modificata in bianco pieno */
-            font-size: 13px;
+            font-size: 16px;
             font-weight: 400;
             margin-top: -2px; /* Avvicina il sottotitolo alla scritta sopra */
             line-height: 1.1;
@@ -120,6 +120,22 @@
             height: 100%;
             object-fit: cover;
         }
+                /* AGGIUNTO: Strato di sfocatura graduale fisso solo sul livello delle foto */
+        #screen-gallery::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 160px; 
+            z-index: 98; /* Sopra le foto, ma sotto l'header (la scritta resta nitida) */
+            pointer-events: none;
+            backdrop-filter: blur(6px); 
+            -webkit-backdrop-filter: blur(6px);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%);
+        }
+
 
             /* Griglia invisibile bloccata fissa sullo schermo */
         #invisible-grid {
