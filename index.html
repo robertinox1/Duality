@@ -34,6 +34,8 @@
             width: 100%;
             height: 100%;
             background: #111;
+             position: relative; /* AGGIUNTO: Necessario per far funzionare lo z-index */
+            z-index: 999;       /* AGGIUNTO: Copre qualsiasi altro elemento sotto, incluse le icone */
         }
         #spectator-name {
             width: 80%;
@@ -212,30 +214,30 @@
             background-color: #555; /* Effetto visivo al tocco */
         }
         
-            /* MODIFICATO: Ora le icone ereditano l'opacità di #screen-gallery e spariscono nella prima schermata */
-        #screen-gallery .ios-gallery-footer-icons {
+                  /* Stile per bloccare le icone in basso nella galleria */
+        .ios-gallery-footer-icons {
             position: fixed;
             left: 0;
             width: 100%;
             display: flex;
-            justify-content: space-between; 
+            justify-content: space-between; /* Spinge un'icona a sinistra e una a destra */
             box-sizing: border-box;
-            z-index: 105; 
-            pointer-events: none; 
+            z-index: 105; /* Rimane sopra le foto ma sotto la schermata di input */
+            pointer-events: none; /* Rilascia il tocco per non bloccare la griglia del trucco */
 
-            /* ↕️ POSIZIONE VERTICALE: Modifica questo valore per alzare o abbassare le icone */
+            /* ↕️ POSIZIONE VERTICALE: Cambia questo numero per alzarle o abbassarle dal fondo */
             bottom: 40px; 
 
-            /* ↔️ DISTANZA DAI BORDI: Modifica il secondo valore (ora 35px) per avvicinarle o allontanarle dai lati dello schermo */
+            /* ↔️ DISTANZA DAI BORDI: Cambia il secondo valore (35px) per allontanarle o avvicinarle ai lati */
             padding: 0 35px; 
         }
 
-        #screen-gallery .ios-icon-btn {
+        .ios-icon-btn {
             object-fit: contain;
             pointer-events: auto; 
-            opacity: 0.9; 
+            opacity: 0.9; /* Leggera trasparenza stile Apple */
 
-            /* 📐 GRANDEZZA ICONE: Modifica questi due valori per ingrandire o rimpicciolire i tuoi PNG */
+            /* 📐 GRANDEZZA ICONE: Cambia questi due valori per ingrandire o rimpicciolire i tuoi PNG */
             width: 50px;  
             height: 50px; 
         }
