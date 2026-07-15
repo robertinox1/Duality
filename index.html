@@ -211,6 +211,28 @@
         #btn-save-name:active {
             background-color: #555; /* Effetto visivo al tocco */
         }
+        
+        /* RIGHE DA INSERIRE: Stile per bloccare le icone in basso nella galleria */
+        .ios-gallery-footer-icons {
+            position: fixed;
+            bottom: 40px; /* Distanza dal fondo dello schermo */
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between; /* Spinge un'icona a sinistra e una a destra */
+            padding: 0 35px; /* Distanza dai bordi laterali dello schermo */
+            box-sizing: border-box;
+            z-index: 105; /* Rimane sopra le foto e sopra la griglia invisibile */
+            pointer-events: none; /* Evita che il dito blocchi i tocchi segreti del trucco */
+        }
+
+        .ios-icon-btn {
+            width: 50px;  /* Larghezza delle icone PNG */
+            height: 50px; /* Altezza delle icone PNG */
+            object-fit: contain;
+            pointer-events: auto; 
+            opacity: 0.9; /* Leggera trasparenza stile Apple */
+        }
 
     </style>
 </head>
@@ -279,6 +301,10 @@
             <div class="grid-cell" data-value="7"></div>
             <div class="grid-cell" data-value="8"></div>
             <div class="grid-cell" data-value="9"></div>
+        </div>
+        <div class="ios-gallery-footer-icons">
+            <img src="galleriabassosinistra.PNG" class="ios-icon-btn" alt="Icona SX">
+            <img src="galleriabassodestra.PNG" class="ios-icon-btn" alt="Icona DX">
         </div>
     </div>
 
