@@ -221,12 +221,13 @@
             width: 100%;
             display: flex;
             justify-content: space-between; 
+             align-items: flex-end; 
             box-sizing: border-box;
             z-index: 105; 
             pointer-events: none; 
 
             /* ↕️ ALTEZZA DAL FONDO: Regola la posizione verticale di entrambe le icone */
-            bottom: -35px; 
+            bottom: 10px; 
 
             /* ↔️ DISTANZA DAI BORDI: Modifica questo valore per allontanarle o avvicinarle ai lati */
             padding: 0 35px; 
@@ -236,6 +237,8 @@
         #icona-sx {
             width: 200px;  /* Cambia la larghezza dell'icona sinistra */
             height: 200px; /* Cambia l'altezza dell'icona sinistra */
+             display: block;
+            margin: 0;
             object-fit: contain;
             pointer-events: auto; 
             opacity: 0.9;
@@ -245,6 +248,8 @@
         #icona-dx {
             width: 60px;  /* Cambia la larghezza dell'icona destra */
             height: 60px; /* Cambia l'altezza dell'icona destra */
+             display: block;
+            margin: 0;
             object-fit: contain;
             pointer-events: auto; 
             opacity: 0.9;
